@@ -32,7 +32,6 @@ import android.os.Environment;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.SystemClock;
-import android.support.annotation.IntDef;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresPermission;
@@ -41,7 +40,6 @@ import android.util.Log;
 import android.util.SparseIntArray;
 import android.view.MotionEvent;
 import android.view.Surface;
-import android.widget.Toast;
 
 import com.example.ezequiel.camera2.utils.Utils;
 import com.google.android.gms.common.images.Size;
@@ -50,8 +48,6 @@ import com.google.android.gms.vision.Frame;
 
 import java.io.IOException;
 import java.lang.Thread.State;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
 import java.nio.ByteBuffer;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -104,6 +100,7 @@ public class Camera2Source {
     private static final SparseIntArray INVERSE_ORIENTATIONS = new SparseIntArray();
     private boolean cameraStarted = false;
     private int mSensorOrientation;
+    private static Detector<?> mDetector;
 
     /**
      * A reference to the opened {@link CameraDevice}.
@@ -401,7 +398,6 @@ public class Camera2Source {
      * Builder for configuring and creating an associated camera source.
      */
     public static class Builder {
-        private final Detector<?> mDetector;
         private Camera2Source mCameraSource = new Camera2Source();
 
         /**
@@ -1248,7 +1244,6 @@ public class Camera2Source {
      * received frame will immediately start on the same thread.
      */
     private class FrameProcessingRunnable implements Runnable {
-        private Detector<?> mDetector;
         private long mStartTimeMillis = SystemClock.elapsedRealtime();
 
         // This lock guards all of the member variables below.
@@ -1447,5 +1442,9 @@ public class Camera2Source {
             }
         }
 
-    };
+    }
+
+    public void refreshDetector(Detector<?> detector){
+        mDetector = detector;
+    }
 }
